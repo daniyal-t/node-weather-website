@@ -1,6 +1,8 @@
 const path = require('path')
 const express = require('express')
 const hbs = require('hbs')
+const geocode = require('./utils/geocode')
+const forecast = require('./utils/forecast')
 
 
 const app = express()
@@ -43,9 +45,45 @@ app.get('/help', (req, res) => {
 })
 
 app.get('/weather', (req, res) => {
+    if (!req.query.address) {
+        return res.send({
+            error: 'you must provide an address'
+        })
+    }
+
+    // empty object is used to provide default value for long lat and location 
+    // without default value which is = {} an empty object server will crash
+    
+    geocode(req.query.address, (error, {longitude, latitude, location} = {} ) => {
+        if (error) {
+            return res.send({error})
+        }
+        forecast(longitude, latitude, (error, forecastData) => {
+            if (error) {
+                return res.send({error})
+            }
+            res.send({
+                location,
+                forecastData,
+                longitude,
+                latitude
+            })
+          })
+    })
+})
+
+app.get('/products', (req, res) => {
+
+    if(!req.query.search) {
+        return res.send({
+            error: 'You must provide a search term'
+        })
+    }
+
     res.send({
-        forecast: 'good',
-        location: 'karachi'
+        products: [
+            req.query
+        ]
     })
 })
 
