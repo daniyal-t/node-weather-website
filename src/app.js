@@ -32,7 +32,7 @@ app.get('', (req, res) => {
 app.get('/about', (req, res) => {
     res.render('about', {
         title: 'About',
-        description: 'This app is about weather app using nodejs, expressjs and handlebars',
+        description: 'This app was created by Daniyal. It uses data from mapbox.com and weatherstack.com',
         name: 'Daniyal'
     })
 })
